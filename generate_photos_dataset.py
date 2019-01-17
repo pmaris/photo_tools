@@ -157,8 +157,18 @@ def write_database(root_directory, file_extensions, output_file_path):
     for photo in get_photo_paths(root_directory, file_extensions):
         photo_metadata = get_photo_metadata(photo)
         columns = ','.join(['`%s`' % key for key in photo_metadata.keys()])
-        values = ','.join(['"%s"' % value for value in photo_metadata.values()])
-        cursor.execute('INSERT INTO photos (%s) VALUES (%s)' % (columns, values))
+        values = []
+        for name, data_type in COLUMNS:
+            if photo_metadata[name] is None:
+                value = 'null'
+            elif data_type == 'text':
+                value = '"%s"' % photo_metadata[name]
+            else:
+                value = '%s' % photo_metadata[name]
+
+            values.append(value)
+
+        cursor.execute('INSERT INTO photos (%s) VALUES (%s)' % (columns, ','.join(values)))
 
     connection.commit()
     connection.close()

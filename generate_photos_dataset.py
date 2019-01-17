@@ -125,7 +125,7 @@ def write_csv_file(root_directory, file_extensions, output_file_path):
 
     if output_file_path is None:
         output_file_path = 'photos.csv'
-    csv_file = open(output_file_path, 'wb')
+    csv_file = open(output_file_path, 'w', newline='')
     writer = csv.DictWriter(csv_file, fieldnames=[col[0] for col in COLUMNS])
     writer.writeheader()
 
